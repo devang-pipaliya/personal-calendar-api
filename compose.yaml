@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  pcm:
+    build:
+      context: .
+      # dockerfile: Dockerfile-official
+      dockerfile: Dockerfile
+    image: gateway-techathon/personal-calendar-meeting:dev-2
+    container_name: pcm_dev2
+    # command: uvicorn app.main:meeting_app --host 0.0.0.0 --port 8042 --reload --log-level debug
+    restart: "always"
+    env_file: .env
+    environment:
+      # - PORT=8042
+      - WDB_SOCKET_SERVER=vriti_wdb_docker_dev
+      - WDB_NO_BROWSER_AUTO_OPEN=True
+    volumes:
+      - ./app:/code/app
+      - ./.env:/code/.env
+      - ./requirements.txt:/code/requirements.txt
+    ports:
+      - 8042:80
+    # expose:
+    #   - 8042
+    networks:
+      - pcm
+
+networks:
+  pcm:
+    driver: bridge
+    name: pcm-dev
+    external: true
+
+  # fastapi:
+  #   build:
+  #     context: ./
+  #     dockerfile: fastapi.dockerfile
+  #   volumes:
+  #     - './fastapi:/app'
+  #   ports:
+  #     - 8000:8000
+  #   environment:
+  #     MONGODB_HOST: mongo
+  #     MONGODB_PORT: 27017
+  #     MONGODB_USER: root
+  #     MONGODB_PASSWORD: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh
+  #     PYTHONPATH: /app
